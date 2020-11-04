@@ -223,19 +223,18 @@ function [Uk, currDeltau] = updateUiter(Uk, deltaured, neumdofs, solutionMethod,
     nodeAngDofs = nodeDofs(2:2:6)  ;
     
     
-    %~ updateA = antiSkew( logm( expm( skew( deltauComplete ( nodeAngDofs ) ) ) * ...
-                                         %~ expm( skew( Uk             ( nodeAngDofs ) ) ) ...
-                                       %~ ) ) ;
+    updateA = antiSkew( logm( expm( skew( deltauComplete ( nodeAngDofs ) ) ) * ...
+                                         expm( skew( Uk             ( nodeAngDofs ) ) ) ) ) ;
+
     updateB = deltauComplete ( nodeAngDofs ) + Uk             ( nodeAngDofs ) ;
 
-    %~ updateC = logar( expon( deltauComplete ( nodeAngDofs ) ) * ...
-                                %~ expon( Uk             ( nodeAngDofs ) ) ) ;
+    updateC = logar( expon( deltauComplete ( nodeAngDofs ) ) * ...
+                                expon( Uk             ( nodeAngDofs ) ) ) ;
                                 
-    Uk ( nodeAngDofs ) = updateB ;
+    Uk ( nodeAngDofs ) = updateA ;
     
   end
-  
-  currDeltau      = currDeltau    + deltaured ;
+    currDeltau      = currDeltau    + deltaured ;%No seria directamente DeltaU?
 
 function vec = antiSkew( mat ) 
   vec = [ mat(3,2) mat(1,3) mat(2,1) ]' ;

@@ -83,18 +83,18 @@ lw2 = 3.2 ; ms2 = 23 ;
 plotfontsize = 22 ;
 
 figure
-%~ plot(controlDisps,'b--o','linewidth',lw,'markersize',ms);
+%plot(controlDisps,'b--o','linewidth',lw,'markersize',ms);
 plot(timesVec, controlDisps,'b--o','linewidth',lw,'markersize',ms);
 grid on
 labx = xlabel('Time (s)');   laby = ylabel(sprintf('Displacement node: %2i dof %1i', controlDofs(1), controlDofs(2) ) ) ;
 set(gca, 'linewidth', 1.2, 'fontsize', plotfontsize )
 set(labx, 'FontSize', plotfontsize); set(laby, 'FontSize', plotfontsize) ;
 
-cd(dirOnsas); cd(outputDir);
+%cd(dirOnsas); cd(outputDir);
 %print('rightAngle','-dpdflatex','-tight')
 %~ print('rightAngle','-dpdflatex')
 %~ print('rightAngle.png','-dpng')
-cd(acdir);
+%cd(acdir);
 
 
 figure

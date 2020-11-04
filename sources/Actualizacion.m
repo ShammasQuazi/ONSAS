@@ -1,8 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%				Actualización de variables	 	 %%%%%%%%%%%%%%%
+%%%%%%%%%%%				Actualizacion de variables	 	 %%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-function [Dtp1kp1,Ddottp1kp1,Ddotdottp1kp1] = Actualizacion (Dt,Dtp1k,Ddott,Ddottp1k,Ddotdott,Ddotdottp1k,DeltaDtp1,NewmarkParams,numericalMethodParams,Nnodes,IterDisp,IterTime)
+function [Dtp1kp1,Ddottp1kp1,Ddotdottp1kp1] = Actualizacion (Dt,Dtp1k,Ddott,... 
+Ddottp1k,Ddotdott,Ddotdottp1k,DeltaDtp1,NewmarkParams,numericalMethodParams,... 
+Nnodes,IterDisp,IterTime)
 
 
 %Newmark paramas (estan al reves que en ANLE) (beta =1/2,Alpha=1/4)
@@ -102,8 +104,8 @@ end
 
 
 %------ Comptactar desplazamientos velcodiadades y aceleraciones ----------
-Dtp1kp1(1:2:end) = Utp1kp1;
-Dtp1kp1(2:2:end) = Thetatp1kp1;
+Dtp1kp1(1:2:end)    = Utp1kp1;
+Dtp1kp1(2:2:end)    = Thetatp1kp1;
 
 Ddottp1kp1(1:2:end) = Udotp1kp1;
 Ddottp1kp1(2:2:end) = Wdottp1kp1;
