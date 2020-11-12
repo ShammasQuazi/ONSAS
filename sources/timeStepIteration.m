@@ -223,7 +223,7 @@ function [Uk, currDeltau] = updateUiter(Uk,Ut, deltaured, neumdofs, solutionMeth
     nodeAngDofs = nodeDofs(2:2:6)  ;
                                 
     if angExponUpdate == 1
-        Additive = deltauComplete ( nodeAngDofs ) + Uk ( nodeAngDofs ) ;
+        Additive = deltauComplete ( nodeAngDofs ) + Uk ( nodeAngDofs ) 
         updateA = antiSkew( logm(  expm( skew( Additive ) ) ) ) ;        
         Uk ( nodeAngDofs ) = updateA ;% Ec 79 Battini Static
     elseif angExponUpdate ==2

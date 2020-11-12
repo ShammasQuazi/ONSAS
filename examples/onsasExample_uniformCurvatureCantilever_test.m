@@ -5,7 +5,7 @@ clear all, close all
 
 problemName = 'uniformCurvatureCantilever' ;
 
-l = 10   ;    ty = .1 ;  tz = .1 ;  Nelem = 20 ;
+l = 10   ;    ty = .1 ;  tz = .1 ;  Nelem = 10 ;
 
 Nodes = [ (0:(Nelem))'*l/Nelem zeros(Nelem+1,2) ] ;
 
@@ -42,10 +42,10 @@ storeBoolean    = 1 ;
 controlDofs     = [ Nelem+1  4  -1 ] ;
 
 stopTolIts      = 30      ;
-stopTolDeltau   = 0       ;
-stopTolForces   = 1.0e-10 ;
-targetLoadFactr = E * Iy * 2 * pi / l ;  % moment of curvature 2pi/l
-nLoadSteps      = 10 ;
+stopTolDeltau   = 1.0e-5      ;
+stopTolForces   = 1.0e-5 ;
+targetLoadFactr = E * Iy * 1* pi / l ;  % moment of curvature 2pi/l
+nLoadSteps      = 40 ;
 
 plotParamsVector = [ 3 ] ; printFlag = 2 ;
 
