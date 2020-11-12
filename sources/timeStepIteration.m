@@ -60,7 +60,7 @@ if startPreviousVels == 1
   Udotdottp1k = Udotdott ;
 else
   [ Udottp1k, Udotdottp1k ] = updateTime( ...
-    Ut, Udott, Udotdott, Utp1k, numericalMethodParams, currTime ) ;
+    Ut, Udott, Udotdott, Utp1k, numericalMethodParams, currTime,angExponUpdate ) ;
 end
 
 if solutionMethod == 2
@@ -87,7 +87,7 @@ while  booleanConverged == 0
   % ---------------------------------------------------
 
   % --- updates: model variables and computes internal forces ---
-  [Utp1k, currDeltau] = updateUiter(Utp1k, deltaured, neumdofs, solutionMethod, currDeltau ) ;
+  [Utp1k, currDeltau] = updateUiter(Utp1k,Ut, deltaured, neumdofs, solutionMethod, currDeltau,angExponUpdate ) ;
 
   % --- update next time magnitudes ---
   [ Udottp1k, Udotdottp1k, nextTime ] = updateTime( ...
@@ -177,7 +177,7 @@ modelCompress
 % ==============================================================================
 %
 % ==============================================================================
-function [ Udottp1, Udotdottp1, nextTime ] = updateTime(Ut, Udott, Udotdott, Uk, numericalMethodParams, currTime )
+function [ Udottp1, Udotdottp1, nextTime ] = updateTime(Ut, Udott, Udotdott, Uk, numericalMethodParams, currTime,angExponUpdate )
 
   [ solutionMethod, stopTolDeltau,   stopTolForces, ...
   stopTolIts,     targetLoadFactr, nLoadSteps,    ...
@@ -206,7 +206,7 @@ end
 % ==============================================================================
 %
 % ==============================================================================
-function [Uk, currDeltau] = updateUiter(Uk, deltaured, neumdofs, solutionMethod, currDeltau ) 
+function [Uk, currDeltau] = updateUiter(Uk,Ut, deltaured, neumdofs, solutionMethod, currDeltau,angExponUpdate ) 
 
   oddNeumDofsInds  = find( mod ( neumdofs , 2)==1 ) ;
   evenNeumDofsInds = find( mod ( neumdofs , 2)==0 ) ;
@@ -221,20 +221,31 @@ function [Uk, currDeltau] = updateUiter(Uk, deltaured, neumdofs, solutionMethod,
   for i=1:nNodes
     nodeDofs = nodes2dofs( i , 6 ) ;
     nodeAngDofs = nodeDofs(2:2:6)  ;
-    
-    
-    updateA = antiSkew( logm( expm( skew( deltauComplete ( nodeAngDofs ) ) ) * ...
-                                         expm( skew( Uk             ( nodeAngDofs ) ) ) ) ) ;
-
-    updateB = deltauComplete ( nodeAngDofs ) + Uk             ( nodeAngDofs ) ;
-
-    updateC = logar( expon( deltauComplete ( nodeAngDofs ) ) * ...
-                                expon( Uk             ( nodeAngDofs ) ) ) ;
                                 
-    Uk ( nodeAngDofs ) = updateA ;
-    
+    if angExponUpdate == 1
+        Additive = deltauComplete ( nodeAngDofs ) + Uk ( nodeAngDofs ) ;
+        updateA = antiSkew( logm(  expm( skew( Additive ) ) ) ) ;        
+        Uk ( nodeAngDofs ) = updateA ;% Ec 79 Battini Static
+    elseif angExponUpdate ==2
+        Additive = deltauComplete ( nodeAngDofs ) + Uk ( nodeAngDofs ) ; 
+        Uk ( nodeAngDofs ) = Additive ;
+%     elseif angExponUpdate ==3
+%         updateB = antiSkew( logm(   expm( skew( Uk ( nodeAngDofs ) ) ) *    expm( skew( deltauComplete ( nodeAngDofs ) ) )  ) ) ; %Ec 71 Ibrahmovic
+%         Uk ( nodeAngDofs ) = updateB ;
+    elseif angExponUpdate ==4
+        updateC = antiSkew( logm(   expm( skew( Uk ( nodeAngDofs ) ) ) *    expm( skew( (Ts( deltauComplete ( nodeAngDofs ) ) )'*deltauComplete ( nodeAngDofs )  ) )  ) ) ;  %Ec 71 Con correcion de T
+        Uk ( nodeAngDofs ) = updateC ;
+%     elseif angExponUpdate ==5
+%         updateD = antiSkew( logm(   expm( skew( inv(Ts(deltauComplete ( nodeAngDofs ) ) )'*deltauComplete ( nodeAngDofs ) ) ) *expm( skew( Uk ( nodeAngDofs ) ) ) ) ) ; %Ec 99 Batti
+%         Uk ( nodeAngDofs ) = updateD ;
+%     elseif angExponUpdate ==6
+%         updateE = antiSkew( logm(   expm( skew( Ts(deltauComplete ( nodeAngDofs ) )'*deltauComplete ( nodeAngDofs ) ) ) *expm( skew( Uk ( nodeAngDofs ) ) ) ) ) ; %Ec 99 Battic con correcio de T
+%         Uk ( nodeAngDofs ) = updateE ;        
+     end 
   end
-    currDeltau      = currDeltau    + deltaured ;%No seria directamente DeltaU?
+
+
+    currDeltau      = currDeltau    + deltaured ;
 
 function vec = antiSkew( mat ) 
   vec = [ mat(3,2) mat(1,3) mat(2,1) ]' ;

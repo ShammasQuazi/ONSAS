@@ -444,11 +444,18 @@ if solutionMethod > 2
     sumMass = sumMass ...
       + lo/2 * wIntPoints( ind ) * IntegrandoMassMatrix( lo/2 * (xIntPoints( ind ) + 1) ) ;
   end
-
+  
   Fine       = EE * sumForce      ;
   GyroMatrix = EE * sumGyro * EE' ;
   MassMatrix = EE * sumMass * EE' ;
-    
+    %Add Bt Matrix
+
+  Bt=[I3   O3       O3      O3
+      O3 inv(Dg1)'    O3      O3
+      O3     O3      I3      O3
+      O3     O3      O3      inv(Dg2)' ];
+  MassMatrix =MassMatrix*Bt ;
+  GyroMatrix =GyroMatrix*Bt ;  
   %~ MassMatrix
   Fine       = Cambio_Base(Fine); % En formato [f1 m1 ...];
   GyroMatrix = Cambio_Base(GyroMatrix); % En formato [u1 theta1 u2 theta2 u3 theta3];

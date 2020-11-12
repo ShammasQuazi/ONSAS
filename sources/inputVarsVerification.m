@@ -146,6 +146,10 @@ end
 % -----------------------
 % analysis settings
 
+if exist( 'angExponUpdate' ) == 0
+  angExponUpdate = 1 ;
+end
+
 if exist( 'stabilityAnalysisBoolean' ) == 0
   stabilityAnalysisBoolean = 0 ;
 end
